@@ -10,7 +10,7 @@ namespace JwtBasedAuthenticationAndAuthorization.EntityConfigs
         {
             builder.ToTable("tbl_books");
             builder.HasKey(b => b.Id);
-            builder.HasIndex(b => b.Name);
+            builder.HasIndex(b => new { b.Id, b.Name });
 
             builder.Property(b => b.Name)
                 .IsRequired()
