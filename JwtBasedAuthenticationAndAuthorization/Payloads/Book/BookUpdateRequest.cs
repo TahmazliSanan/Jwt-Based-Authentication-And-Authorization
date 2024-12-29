@@ -1,6 +1,6 @@
-﻿namespace JwtBasedAuthenticationAndAuthorization.Payloads
+﻿namespace JwtBasedAuthenticationAndAuthorization.Payloads.Book
 {
-    public class BookCreateRequest
+    public class BookUpdateRequest
     {
         public string Name { get; set; } = string.Empty;
         public double Price { get; set; }

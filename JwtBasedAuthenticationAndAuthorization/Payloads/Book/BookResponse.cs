@@ -1,4 +1,4 @@
-﻿namespace JwtBasedAuthenticationAndAuthorization.Payloads
+﻿namespace JwtBasedAuthenticationAndAuthorization.Payloads.Book
 {
     public class BookResponse
     {
@@ -7,5 +7,7 @@
         public string Name { get; set; } = string.Empty;
         public double Price { get; set; }
         public DateTime? PublishedDate { get; set; }
+        public DateTime CreatedDateTime { get; set; }
+        public DateTime? ModifiedDateTime { get; set; }
     }
 }
