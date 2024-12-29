@@ -1,6 +1,6 @@
 ﻿using JwtBasedAuthenticationAndAuthorization.Data;
 using JwtBasedAuthenticationAndAuthorization.Entities;
-using JwtBasedAuthenticationAndAuthorization.Payloads;
+using JwtBasedAuthenticationAndAuthorization.Payloads.Book;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,7 +25,8 @@ namespace JwtBasedAuthenticationAndAuthorization.Controllers
             {
                 Name = bookCreateRequest.Name,
                 Price = bookCreateRequest.Price,
-                PublishedDate = bookCreateRequest.PublishedDate
+                PublishedDate = bookCreateRequest.PublishedDate,
+                CreatedDateTime = DateTime.UtcNow
             };
 
             await _context.Books.AddAsync(book);
@@ -37,7 +38,9 @@ namespace JwtBasedAuthenticationAndAuthorization.Controllers
                 Id = book.Id,
                 Name = book.Name,
                 Price = book.Price,
-                PublishedDate = book.PublishedDate
+                PublishedDate = book.PublishedDate,
+                CreatedDateTime = book.CreatedDateTime,
+                ModifiedDateTime = book.ModifiedDateTime
             };
 
             return Created($"/get/{bookResponse.Id}", bookResponse);
@@ -66,7 +69,9 @@ namespace JwtBasedAuthenticationAndAuthorization.Controllers
                     Id = id,
                     Name = foundBook.Name,
                     Price = foundBook.Price,
-                    PublishedDate = foundBook.PublishedDate
+                    PublishedDate = foundBook.PublishedDate,
+                    CreatedDateTime = foundBook.CreatedDateTime,
+                    ModifiedDateTime = foundBook.ModifiedDateTime
                 };
             }
 
@@ -86,6 +91,8 @@ namespace JwtBasedAuthenticationAndAuthorization.Controllers
                 Name = book.Name,
                 Price = book.Price,
                 PublishedDate = book.PublishedDate,
+                CreatedDateTime = book.CreatedDateTime,
+                ModifiedDateTime = book.ModifiedDateTime
             }).ToList();
 
             return Ok(bookListResponse);
@@ -93,7 +100,7 @@ namespace JwtBasedAuthenticationAndAuthorization.Controllers
 
         [HttpPut]
         [Route("/update/{id:long}")]
-        public async Task<IActionResult> UpdateAsync(long id, [FromBody] BookCreateRequest bookCreateRequest)
+        public async Task<IActionResult> UpdateAsync(long id, [FromBody] BookUpdateRequest bookUpdateRequest)
         {
             BookResponse bookResponse;
             var foundBook = await _context.Books.FindAsync(id);
@@ -108,9 +115,10 @@ namespace JwtBasedAuthenticationAndAuthorization.Controllers
             }
             else
             {
-                foundBook.Name = bookCreateRequest.Name;
-                foundBook.Price = bookCreateRequest.Price;
-                foundBook.PublishedDate = bookCreateRequest.PublishedDate;
+                foundBook.Name = bookUpdateRequest.Name;
+                foundBook.Price = bookUpdateRequest.Price;
+                foundBook.PublishedDate = bookUpdateRequest.PublishedDate;
+                foundBook.ModifiedDateTime = DateTime.UtcNow;
 
                 await _context.SaveChangesAsync();
 
@@ -120,7 +128,9 @@ namespace JwtBasedAuthenticationAndAuthorization.Controllers
                     Id = id,
                     Name = foundBook.Name,
                     Price = foundBook.Price,
-                    PublishedDate = foundBook.PublishedDate
+                    PublishedDate = foundBook.PublishedDate,
+                    CreatedDateTime = foundBook.CreatedDateTime,
+                    ModifiedDateTime = foundBook.ModifiedDateTime
                 };
             }
 
