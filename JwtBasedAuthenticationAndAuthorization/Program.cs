@@ -1,3 +1,7 @@
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using JwtBasedAuthenticationAndAuthorization.DataValidations;
+
 namespace JwtBasedAuthenticationAndAuthorization
 {
     public class Program
@@ -8,6 +12,9 @@ namespace JwtBasedAuthenticationAndAuthorization
 
             // Add services to the container.
             builder.Services.AddControllers();
+            
+            builder.Services.AddFluentValidationAutoValidation();
+            builder.Services.AddValidatorsFromAssemblyContaining<BookCreateRequestValidator>();
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
