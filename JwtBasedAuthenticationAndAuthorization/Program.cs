@@ -1,6 +1,8 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using JwtBasedAuthenticationAndAuthorization.Data;
 using JwtBasedAuthenticationAndAuthorization.DataValidations;
+using Microsoft.EntityFrameworkCore;
 
 namespace JwtBasedAuthenticationAndAuthorization
 {
@@ -9,12 +11,16 @@ namespace JwtBasedAuthenticationAndAuthorization
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
             // Add services to the container.
             builder.Services.AddControllers();
             
             builder.Services.AddFluentValidationAutoValidation();
             builder.Services.AddValidatorsFromAssemblyContaining<BookCreateRequestValidator>();
+
+            builder.Services.AddDbContext<AppDbContext>(options => 
+                options.UseNpgsql(connectionString));
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
