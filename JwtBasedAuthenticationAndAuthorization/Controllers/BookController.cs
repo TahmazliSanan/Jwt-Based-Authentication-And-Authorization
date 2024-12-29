@@ -30,16 +30,47 @@ namespace JwtBasedAuthenticationAndAuthorization.Controllers
 
             await _context.Books.AddAsync(book);
             await _context.SaveChangesAsync();
-            return Created($"/get/{book.Id}", book);
+
+            var bookResponse = new BookResponse
+            {
+                Message = "Book created successfully",
+                Id = book.Id,
+                Name = book.Name,
+                Price = book.Price,
+                PublishedDate = book.PublishedDate
+            };
+
+            return Created($"/get/{bookResponse.Id}", bookResponse);
         }
 
         [HttpGet]
         [Route("/get/{id:long}")]
         public async Task<IActionResult> GetAsync(long id)
         {
+            BookResponse bookResponse;
             var foundBook = await _context.Books.FindAsync(id);
-            if (foundBook is null) return NotFound($"Book not found with id {id}");
-            return Ok(foundBook);
+            
+            if (foundBook is null)
+            {
+                bookResponse = new BookResponse
+                {
+                    Message = $"Book not found with id {id}",
+                    Id = id
+                };
+            }
+            else
+            {
+                bookResponse = new BookResponse
+                {
+                    Message = "Book found",
+                    Id = id,
+                    Name = foundBook.Name,
+                    Price = foundBook.Price,
+                    PublishedDate = foundBook.PublishedDate
+                };
+            }
+
+            return Ok(bookResponse);
         }
 
         [HttpGet]
@@ -47,31 +78,83 @@ namespace JwtBasedAuthenticationAndAuthorization.Controllers
         public async Task<IActionResult> GetAllAsync()
         {
             var bookList = await _context.Books.ToListAsync();
-            return Ok(bookList);
+
+            var bookListResponse = bookList.Select(book => new BookResponse
+            {
+                Message = "Book list retrieved successfully",
+                Id = book.Id,
+                Name = book.Name,
+                Price = book.Price,
+                PublishedDate = book.PublishedDate,
+            }).ToList();
+
+            return Ok(bookListResponse);
         }
 
         [HttpPut]
         [Route("/update/{id:long}")]
         public async Task<IActionResult> UpdateAsync(long id, [FromBody] BookCreateRequest bookCreateRequest)
         {
+            BookResponse bookResponse;
             var foundBook = await _context.Books.FindAsync(id);
-            if (foundBook is null) return NotFound($"Book not found with id {id}");
-            foundBook.Name = bookCreateRequest.Name;
-            foundBook.Price = bookCreateRequest.Price;
-            foundBook.PublishedDate = bookCreateRequest.PublishedDate;
-            await _context.SaveChangesAsync();
-            return Ok(foundBook);
+            
+            if (foundBook is null)
+            {
+                bookResponse = new BookResponse
+                {
+                    Message = $"Book not found with id {id}",
+                    Id = id
+                };
+            }
+            else
+            {
+                foundBook.Name = bookCreateRequest.Name;
+                foundBook.Price = bookCreateRequest.Price;
+                foundBook.PublishedDate = bookCreateRequest.PublishedDate;
+
+                await _context.SaveChangesAsync();
+
+                bookResponse = new BookResponse
+                {
+                    Message = "Book updated successfully",
+                    Id = id,
+                    Name = foundBook.Name,
+                    Price = foundBook.Price,
+                    PublishedDate = foundBook.PublishedDate
+                };
+            }
+
+            return Ok(bookResponse);
         }
 
         [HttpDelete]
         [Route("/delete/{id:long}")]
         public async Task<IActionResult> DeleteAsync(long id)
         {
+            BookResponse bookResponse;
             var foundBook = await _context.Books.FindAsync(id);
-            if (foundBook is null) return NotFound($"Book not found with id {id}");
-            _context.Books.Remove(foundBook);
-            await _context.SaveChangesAsync();
-            return Ok($"Book with id {id} deleted successfully");
+
+            if (foundBook is null)
+            {
+                bookResponse = new BookResponse
+                {
+                    Message = $"Book not found with id {id}",
+                    Id = id
+                };
+            }
+            else
+            {
+                _context.Books.Remove(foundBook);
+                await _context.SaveChangesAsync();
+
+                bookResponse = new BookResponse
+                {
+                    Message = "Book deleted successfully",
+                    Id = id
+                };
+            }
+
+            return Ok(bookResponse);
         }
     }
 }
