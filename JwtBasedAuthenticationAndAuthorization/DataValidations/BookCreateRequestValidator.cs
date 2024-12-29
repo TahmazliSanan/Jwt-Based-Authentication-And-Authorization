@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using JwtBasedAuthenticationAndAuthorization.Payloads;
+using JwtBasedAuthenticationAndAuthorization.Payloads.Book;
 
 namespace JwtBasedAuthenticationAndAuthorization.DataValidations
 {
