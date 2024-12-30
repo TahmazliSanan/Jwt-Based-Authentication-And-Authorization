@@ -105,6 +105,8 @@ namespace JwtBasedAuthenticationAndAuthorization.Controllers
         private string GenerateJwt(User user)
         {
             var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+            var issuer = _config.GetSection("Jwt").GetSection("Issuer").Value;
+            var audience = _config.GetSection("Jwt").GetSection("Audience").Value;
             var signingKey = _config.GetSection("Jwt").GetSection("SigningKey").Value;
             var signingKeyAsBytes = Encoding.UTF8.GetBytes(signingKey);
 
@@ -126,8 +128,8 @@ namespace JwtBasedAuthenticationAndAuthorization.Controllers
             var securityTokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claimList),
-                Issuer = "example.com",
-                Audience = "example.com",
+                Issuer = issuer,
+                Audience = audience,
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(
                     new SymmetricSecurityKey(signingKeyAsBytes),
