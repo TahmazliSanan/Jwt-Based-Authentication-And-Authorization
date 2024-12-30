@@ -1,6 +1,7 @@
 ﻿using JwtBasedAuthenticationAndAuthorization.Data;
 using JwtBasedAuthenticationAndAuthorization.Entities;
 using JwtBasedAuthenticationAndAuthorization.Payloads.Book;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,7 @@ namespace JwtBasedAuthenticationAndAuthorization.Controllers
 
         [HttpPost]
         [Route("/create")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> CreateAsync([FromBody] BookCreateRequest bookCreateRequest)
         {
             var book = new Book
@@ -48,6 +50,7 @@ namespace JwtBasedAuthenticationAndAuthorization.Controllers
 
         [HttpGet]
         [Route("/get/{id:long}")]
+        [Authorize(Policy = "AdminOrUser")]
         public async Task<IActionResult> GetAsync(long id)
         {
             BookResponse bookResponse;
@@ -80,6 +83,7 @@ namespace JwtBasedAuthenticationAndAuthorization.Controllers
 
         [HttpGet]
         [Route("/get/all")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAllAsync()
         {
             var bookList = await _context.Books.ToListAsync();
@@ -100,6 +104,7 @@ namespace JwtBasedAuthenticationAndAuthorization.Controllers
 
         [HttpPut]
         [Route("/update/{id:long}")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> UpdateAsync(long id, [FromBody] BookUpdateRequest bookUpdateRequest)
         {
             BookResponse bookResponse;
@@ -139,6 +144,7 @@ namespace JwtBasedAuthenticationAndAuthorization.Controllers
 
         [HttpDelete]
         [Route("/delete/{id:long}")]
+        [Authorize(Policy = "Admin")]
         public async Task<IActionResult> DeleteAsync(long id)
         {
             BookResponse bookResponse;
