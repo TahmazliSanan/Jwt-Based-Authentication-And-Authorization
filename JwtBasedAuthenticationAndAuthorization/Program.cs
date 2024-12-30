@@ -1,7 +1,8 @@
 using FluentValidation;
 using FluentValidation.AspNetCore;
 using JwtBasedAuthenticationAndAuthorization.Data;
-using JwtBasedAuthenticationAndAuthorization.DataValidations;
+using JwtBasedAuthenticationAndAuthorization.DataValidations.Book;
+using JwtBasedAuthenticationAndAuthorization.DataValidations.User;
 using Microsoft.EntityFrameworkCore;
 
 namespace JwtBasedAuthenticationAndAuthorization
@@ -18,6 +19,8 @@ namespace JwtBasedAuthenticationAndAuthorization
             
             builder.Services.AddFluentValidationAutoValidation();
             builder.Services.AddValidatorsFromAssemblyContaining<BookCreateRequestValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<BookUpdateRequestValidator>();
+            builder.Services.AddValidatorsFromAssemblyContaining<UserRegisterRequestValidator>();
 
             builder.Services.AddDbContext<AppDbContext>(options => 
                 options.UseNpgsql(connectionString));
